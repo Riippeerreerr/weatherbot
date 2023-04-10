@@ -16,9 +16,9 @@ LOG.addHandler(my_ch)
 
 
 class WssClient:
-    def __init__(self,callback_function):
-        self.ws_client= None
-        self.callback=callback_function
+    def __init__(self, callback_function):
+        self.ws_client = None
+        self.callback = callback_function
 
     async def on_msg(self, websocket):
         while True:
@@ -45,29 +45,28 @@ class WssClient:
         json_string = json.dumps(auth_dict)
         return json_string
 
-    def get_weather_msg(self,chat_id=0):
+    def get_weather_msg(self, location, username, chat_id=0):
         weather_dict = {
             "action": "weather",
-            "location":"bucuresti",
+            "location": location,
+            "username": username,
             "chatID": chat_id
         }
         json_string = json.dumps(weather_dict)
         return json_string
 
     async def start_wsclient(self):
-        async with websockets.connect('ws://localhost:8000') as websocket:
-            self.ws_client=websocket
-            new_ping = self.get_ping_json()
-            await websocket.send(new_ping)
-            resp = await websocket.recv()
+        async with websockets.connect('ws://localhost:8021') as websocket:
+            self.ws_client = websocket
+
+            # new_ping = self.get_ping_json()
+            # await websocket.send(new_ping)
+            # resp = await websocket.recv()
             # await websocket.send("Salut!")
-
-            vreme = self.get_weather_msg()
-            await  websocket.send(vreme)
-
-            auth = self.mesaj_auth()
-            await websocket.send(auth)
-
+            # weather = self.get_weather_msg()
+            # await websocket.send(weather)
+            # auth = self.mesaj_auth()
+            # await websocket.send(auth)
             # raspuns_timer=await websocket.recv()
             # print(raspuns_timer)
 

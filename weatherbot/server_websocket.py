@@ -41,7 +41,8 @@ def process_weather(message):
         "location": city,
         "max temperature": temperature_max,
         "precipitations": confirmed_rain,
-        "chatID": message.get("chatID")
+        "chatID": message.get("chatID"),
+        "username": message.get("username")
     }
     weather_msg = json.dumps(weather_dict)
     websockets.broadcast(USERS, weather_msg)
@@ -57,14 +58,14 @@ def process_ping(message):
     websockets.broadcast(USERS, pong_msg)
 
 
-def procesare_auth(message):
+def process_auth(message):
     my_users_dict = {
         "username": "vlad",
         "password": "pass"
     }
-    user_primit = message.get("username", "")
-    parola_primita = message.get("password", "")
-    if user_primit == my_users_dict["username"] and parola_primita == my_users_dict["password"]:
+    user_recv = message.get("username", "")
+    password_recv = message.get("password", "")
+    if user_recv == my_users_dict["username"] and password_recv == my_users_dict["password"]:
         auth_dict = {
             "action": "auth",
             "status": True,
@@ -94,7 +95,7 @@ async def counter(websocket):
     global USERS, VALUE
     actions = {
         "ping": process_ping,
-        "auth": procesare_auth,
+        "auth": process_auth,
         "weather": process_weather
     }
     while True:
@@ -118,7 +119,7 @@ async def counter(websocket):
 
 
 async def start_server():
-    async with websockets.serve(counter, "localhost", 8000):
+    async with websockets.serve(counter, "localhost", 8021):
         await asyncio.Future()  # run forever
 
 

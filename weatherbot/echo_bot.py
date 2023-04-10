@@ -59,37 +59,35 @@ keyboard = InlineKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True).ad
 
 @dp.message_handler(commands=['weather'])
 async def weather(message: types.Message):
-    # keyboard = InlineKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True).add(button1).add(button2).add(button3)
+    # keyboard = InlineKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True).add(button1).add(button2).add(
+    # button3)
     await message.reply('keyboard', reply_markup=keyboard)
 
 
+# html markup telegram
+
 async def on_wss_msg(message):
-    print(message)
+    LOG.info(message)
     msg = json.loads(message)
+    name = msg.get("username")
     location = msg.get("location")
     chatID = msg.get("chatID")
+    max_temp = msg.get("max temperature")
+    precipitations = msg.get("precipitations")
+    msg = (
+        f'Buna ziua, <b>{name}</b>!\n'
+        f'Vremea aleasa este pentru locatia <i>{location}</i>.\n'
+        f'Maxima temperaturii de astazi va fi de {max_temp} grade.\n'
+        f"Precipitatiile astazi {'vor' if precipitations else 'nu vor'} exista."
+    )
     if chatID:
-        await bot.send_message(chatID, message)
-
-
-@dp.message_handler(commands=['funny'])
-async def joke(message: types.Message):
-    vreme = WS.get_weather_msg(chat_id=message.from_id)
-    await WS.ws_client.send(vreme)
-    print(message)
-    await message.reply("I invented a new word!           🤣PLAGIARISM🤣")
+        await bot.send_message(chatID, msg, parse_mode="HTML")
 
 
 @dp.callback_query_handler(text=["brasov", "bucuresti", "corbeanca"])
-async def process_weather(call: types.CallbackQuery):
-    if call.data == "brasov":
-        await on_wss_msg(message="brasov")
-        await call.message.answer(f"Buna ziua domnule/doamna . Astazi locatia este braspov")
-    await call.answer()
-    # if call.data == "bucuresti":
-    #     await call.message.answer("Locatia este bucuresti")
-    # if call.data == "corbeanca":
-    #     await call.message.answer("Locatia este corbeanca")
+async def process_weather_callback(call: types.CallbackQuery):
+    weather_json = WS.get_weather_msg(call.data, call.from_user.first_name, chat_id=call.from_user.id)
+    await WS.ws_client.send(weather_json)
 
 
 @dp.message_handler()
@@ -102,6 +100,7 @@ async def echo(message: types.Message):
 
 WS = WssClient(on_wss_msg)
 
+
 def main():
     loop = asyncio.get_event_loop()
     loop.create_task(WS.start_wsclient())
@@ -110,4 +109,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-

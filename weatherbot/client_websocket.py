@@ -56,7 +56,7 @@ class WssClient:
         return json_string
 
     async def start_wsclient(self):
-        async with websockets.connect('ws://localhost:8021') as websocket:
+        async with websockets.connect('ws://127.0.0.1:8021') as websocket:
             self.ws_client = websocket
 
             # new_ping = self.get_ping_json()

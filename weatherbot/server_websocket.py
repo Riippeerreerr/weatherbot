@@ -119,7 +119,7 @@ async def counter(websocket):
 
 
 async def start_server():
-    async with websockets.serve(counter, "localhost", 8021):
+    async with websockets.serve(counter, "127.0.0.1", 8021):
         await asyncio.Future()  # run forever
 
 

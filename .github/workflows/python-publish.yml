@@ -34,8 +34,10 @@ jobs:
         run: ls dist
       - name: Copy SSH private key
         run: |
+          mkdir ~/.ssh
+          chmod 700 ~/.ssh
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_ed25519
-          chmod 600 ~/.ssh/id_ed25519
+          chmod 644 ~/.ssh/id_ed25519
       - name: Copy file using SCP
         run: |
           WHEEL='ls dist/*.whl'

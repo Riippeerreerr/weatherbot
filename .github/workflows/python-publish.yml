@@ -41,7 +41,7 @@ jobs:
           echo $SSH_KEY 
           echo $SSH_KEY > ~/.ssh/id_ed25519
           cat ~/.ssh/id_ed25519
-          chmod 644 ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
       - name: Copy file using SCP
         run: |
           WHEEL='ls dist/*.whl'

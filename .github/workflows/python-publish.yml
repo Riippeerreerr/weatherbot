@@ -20,9 +20,10 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-      - uses: webfactory/ssh-agent@0.8.0
+      - name: Install SSH Key
+        uses: shimataro/ssh-key-action@v2
         with:
-          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+          key: {%- raw -%} ${{ secrets.SSH_PRIVATE_KEY }}
       - name: Set up Python
         uses: actions/setup-python@v3
         with:
@@ -35,24 +36,19 @@ jobs:
         run: python setup.py bdist_wheel
       - name: List folder
         run: ls dist
-      - shell: bash
-        env:
-          SSH_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-#      - name: Copy SSH private key
-#        env:
-#          SSH_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-        run: |
-          mkdir ~/.ssh
-          chmod 700 ~/.ssh  
-          ls ~/.ssh
-          echo $SSH_KEY 
-          echo $SSH_KEY > ~/.ssh/id_ed25519
-          ls ~/.ssh
-          cat ~/.ssh/id_ed25519
-          echo "one two" > ~/.ssh/id_dti
-          wc ~/.ssh/id_dti
-          wc ~/.ssh/id_ed25519
-          chmod 600 ~/.ssh/id_ed25519
+
+#        run: |
+#          mkdir ~/.ssh
+#          chmod 700 ~/.ssh
+#          ls ~/.ssh
+#          echo $SSH_KEY
+#          echo $SSH_KEY > ~/.ssh/id_ed25519
+#          ls ~/.ssh
+#          cat ~/.ssh/id_ed25519
+#          echo "one two" > ~/.ssh/id_dti
+#          wc ~/.ssh/id_dti
+#          wc ~/.ssh/id_ed25519
+#          chmod 600 ~/.ssh/id_ed25519
       - name: Copy file using SCP
         run: |
           WHEEL='ls dist/*.whl'

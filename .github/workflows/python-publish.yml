@@ -24,8 +24,14 @@ jobs:
         uses: shimataro/ssh-key-action@v2
         with:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          name: id_rsa
+          name: id_rsa-qal
           known_hosts: ${{ secrets.KNOWN_HOSTS }}
+          config: |
+            Host qal
+              HostName 173.249.55.197
+              User cvlad
+              IdentityFile ~/.ssh/id_rsa-qal
+              Port 1722
       - name: Set up Python
         uses: actions/setup-python@v3
         with:
@@ -38,22 +44,9 @@ jobs:
         run: python setup.py bdist_wheel
       - name: List folder
         run: ls dist
-
-#        run: |
-#          mkdir ~/.ssh
-#          chmod 700 ~/.ssh
-#          ls ~/.ssh
-#          echo $SSH_KEY
-#          echo $SSH_KEY > ~/.ssh/id_ed25519
-#          ls ~/.ssh
-#          cat ~/.ssh/id_ed25519
-#          echo "one two" > ~/.ssh/id_dti
-#          wc ~/.ssh/id_dti
-#          wc ~/.ssh/id_ed25519
-#          chmod 600 ~/.ssh/id_ed25519
       - name: Copy file using SCP
         run: |
           WHEEL='ls dist/*.whl'
-          scp -o StrictHostKeyChecking=no -P 1722 $WHEEL cvlad@173.249.55.197:/home/cvlad/weatherbot-3.11.3/dist
+          scp -o StrictHostKeyChecking=no -P 1722 $WHEEL qal:/home/cvlad/weatherbot-3.11.3/dist
 
       

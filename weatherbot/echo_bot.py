@@ -61,6 +61,7 @@ keyboard = InlineKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True).ad
 async def weather(message: types.Message):
     # keyboard = InlineKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True).add(button1).add(button2).add(
     # button3)
+    print("jhjggj")
     await message.reply('keyboard', reply_markup=keyboard)
 
 

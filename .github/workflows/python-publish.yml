@@ -55,7 +55,7 @@ jobs:
       - name: Install package
         run: |
           WHEEL=`ls dist/*.whl`
-          ssh qal "/home/cvlad/.pyenv/versions/weatherbot-3.11.3/bin/pip install ${WHEEL}"
+          ssh qal "cd /home/cvlad/weatherbot-3.11.3;/home/cvlad/.pyenv/versions/weatherbot-3.11.3/bin/pip install ${WHEEL}"
       - name: Starting processes
         run: | 
           ssh qal "systemctl --user start  wbot.service"

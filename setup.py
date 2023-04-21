@@ -1,6 +1,6 @@
 from setuptools import setup, find_packages
 
-VERSION = '1.0.15'
+VERSION = '1.0.17'
 
 # Runtime dependencies. See requirements.txt for development dependencies.
 DEPENDENCIES = [

@@ -48,5 +48,21 @@ jobs:
         run: |
           WHEEL=`ls dist/*.whl`
           scp -o StrictHostKeyChecking=no -P 1722 $WHEEL qal:/home/cvlad/weatherbot-3.11.3/dist
+      - name: Stopping processes
+        run: | 
+          ssh qal "systemctl --user stop  wbot.service"
+          ssh qal "systemctl --user stop  wserver.service"
+      - name: Install package
+        run: |
+          WHEEL=`ls dist/*.whl`
+          ssh qal "/home/cvlad/.pyenv/versions/weatherbot-3.11.3/bin/pip ${WHEEL}"
+      - name: Starting processes
+        run: | 
+          ssh qal "systemctl --user start  wbot.service"
+          ssh qal "systemctl --user start  wserver.service"
+
+
+
+
 
       

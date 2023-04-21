@@ -8,7 +8,7 @@
 
 name: Upload Python Package
 
-on: [push]
+on: [ push ]
 
 permissions:
   contents: read
@@ -19,21 +19,26 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v3
-    - name: Set up Python
-      uses: actions/setup-python@v3
-      with:
-        python-version: '3.11.3'
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install -r requirements.txt
-    - name: Build package
-      run: python setup.py bdist_wheel
-    - name: List folder
-      run: ls dist
-#    - name: Publish package
-#      uses: pypa/gh-action-pypi-publish@27b31702a0e7fc50959f5ad993c78deac1bdfc29
-#      with:
-#        user: __token__
-#        password: ${{ secrets.PYPI_API_TOKEN }}
+      - uses: actions/checkout@v3
+      - name: Set up Python
+        uses: actions/setup-python@v3
+        with:
+          python-version: '3.11.3'
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+      - name: Build package
+        run: python setup.py bdist_wheel
+      - name: List folder
+        run: ls dist
+      - name: Copy SSH private key
+        run: |
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+      - name: Copy file using SCP
+        run: |
+          WHEEL='ls dist/*.whl'
+          scp -i ~/.ssh/id_ed25519 -o StrictHostKeyChecking=no -P 1722 $WHEEL cvlad@173.249.55.197:/home/cvlad/weatherbot-3.11.3/dist
+
+      

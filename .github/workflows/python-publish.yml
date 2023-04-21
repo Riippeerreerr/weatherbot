@@ -20,6 +20,7 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
+
       - name: Set up Python
         uses: actions/setup-python@v3
         with:
@@ -32,12 +33,15 @@ jobs:
         run: python setup.py bdist_wheel
       - name: List folder
         run: ls dist
-      - name: Copy SSH private key
+      - shell: bash
         env:
-          SSH_KEY: ${{ secrets.SSH_PRIVATE_KEY2 }}
+          SSH_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+#      - name: Copy SSH private key
+#        env:
+#          SSH_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
         run: |
           mkdir ~/.ssh
-          chmod 700 ~/.ssh
+          chmod 700 ~/.ssh  
           ls ~/.ssh
           echo $SSH_KEY 
           echo $SSH_KEY > ~/.ssh/id_ed25519

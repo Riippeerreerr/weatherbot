@@ -46,7 +46,7 @@ jobs:
         run: ls dist
       - name: Copy file using SCP
         run: |
-          WHEEL='ls dist/*.whl'
+          WHEEL=`ls dist/*.whl`
           scp -o StrictHostKeyChecking=no -P 1722 $WHEEL qal:/home/cvlad/weatherbot-3.11.3/dist
 
       

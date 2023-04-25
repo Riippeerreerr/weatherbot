@@ -98,24 +98,24 @@ async def counter(websocket):
         "auth": process_auth,
         "weather": process_weather
     }
-    while True:
-        try:
-            # Register user
-            USERS.add(websocket)
-            websockets.broadcast(USERS, users_event())
-            # Send current state to user
-            await websocket.send(value_event())
-            # Manage state changes
-            async for message in websocket:
-                LOG.info(message)
-                event = json.loads(message)
-                act = event.get("action", "unknown")
-                actions[act](event)
-
-        finally:
-            # Unregister user
-            USERS.remove(websocket)
-            websockets.broadcast(USERS, users_event())
+    try:
+        # Register user
+        USERS.add(websocket)
+        websockets.broadcast(USERS, users_event())
+        # Send current state to user
+        await websocket.send(value_event())
+        # Manage state changes
+        async for message in websocket:
+            LOG.info(message)
+            event = json.loads(message)
+            act = event.get("action", "unknown")
+            actions[act](event)
+    except Exception as e:
+        LOG.warning("User disconected")
+    finally:
+        # Unregister user
+        USERS.remove(websocket)
+        websockets.broadcast(USERS, users_event())
 
 
 async def start_server():
@@ -129,4 +129,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
